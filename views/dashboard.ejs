@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Welcome, <%= user.username %>!</p>
+    <p><%= user.user_id %></p>
+
+    <h2>Candidate List</h2>
+    <ul>
+        <% candidates.forEach(candidate => { %>
+            <li>
+                <strong>Name:</strong><%= candidate._id %> <%= candidate.name %> <br>
+                <strong>Vision:</strong> <%= candidate.vision %> <br>
+                <strong>Mission:</strong> <%= candidate.mission %> <br>
+                <form action="/api/v1/votings" method="POST">
+                    <input type="hidden" name="user_id" value="<%= user._id %>">
+                    <input type="hidden" name="candidate_id" value="<%= candidate._id %>">
+                    <button type="submit">Pilih</button>
+                </form>
+            </li><br>
+        <% }) %>
+    </ul>
+    
+    <h1>Vote Counts</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Candidate ID</th>
+                <th>Candidate Name</th>
+                <th>Vote Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% voteCounts.forEach(voteCount => { %>
+                <tr>
+                    <td><%= voteCount._id %></td>
+                    <td>
+                        <% const candidate = candidates.find(c => c._id.toString() === voteCount._id.toString()); %>
+                        <%= candidate ? candidate.name : 'Candidate not found' %>
+                    </td>
+                    <td><%= voteCount.count %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+    <a href="/logout">Logout</a>
+</body>
+</html>
